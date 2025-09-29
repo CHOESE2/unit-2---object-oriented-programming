@@ -5,7 +5,13 @@
    PImage[] rat;
    
    
-   gif(){ //setup constructor
+   gif(float _rx, float _ry, int _rw, int _rh ){ //setup constructor
+   ratx = _rx;
+   raty = _ry;
+   ratw = _rw;
+   rath = _rh;
+   
+   
    ratCount = 4;
      i = 0;
      rat = new PImage[ratCount]; 
@@ -20,7 +26,7 @@
    }
    
    void show(){
-     image(rat[i], 0, 0, width, height);
+     image(rat[i], ratx, raty, ratw, rath);
      println(frameCount);
    if(frameCount % 2 ==0) i++;
      if(i == ratCount) i = 0;
