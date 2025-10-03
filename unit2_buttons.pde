@@ -20,7 +20,7 @@ boolean clicked;
 color c = #FFFFFF;
 color idk = #f9bec7;
 
-
+Rat remy, remyBrother;
 buttons chee, tree, cheese;
 int cheeCount = 2;
 
@@ -45,6 +45,11 @@ void setup() {
   //cheese = new buttons("rat", 200, 400, 100, 100, normal, highlight);
   //tree = new buttons();
   //startButton = new buttons("Start", 100);
+
+
+  //gifs
+  remy = new Rat("frame_", "_delay-0.01s.gif", 4, 300, 300 , 200, 200); //8 is the speed
+  remyBrother = new Rat("frame_", "_delay-0.15s.gif", 6, 200, 100, 50, 50);
 }
 
 
@@ -60,18 +65,19 @@ void draw() {
   //tree.act();
 
   if (chee.clicked) {
-    c = #bcd4e6;  
-  } 
-  if(tree.clicked){
+    c = #bcd4e6;
+  }
+  if (tree.clicked) {
     c = #f9bec7;
   }
-  
-  
-  
-  
 
 
 
+
+
+
+  remy.show();
+  remyBrother.show();
 
 
   // background(255);
