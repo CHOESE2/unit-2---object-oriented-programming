@@ -1,0 +1,13 @@
+
+void defeat() {
+  
+  
+  
+}
+
+
+void defeatClicks(){
+  
+  
+  
+}
