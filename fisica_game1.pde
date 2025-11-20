@@ -24,6 +24,13 @@ boolean kOFF = false;
 
 boolean collision = false;
 
+//boolean keys
+boolean aKey, sKey, dKey, wKey;
+boolean leftKey, rightKey, downKey, upKey;
+
+
+
+//stuff
 
 
 
@@ -32,6 +39,8 @@ FBox greenBox;
 FBox blueBox;
 FBox redBox;
 FPoly bottomPlatform;
+
+FPoly bridge1;
 
 FPoly topPlatform2;
 
@@ -44,8 +53,8 @@ void setup() {
 
   //load resources
 
-  peanut = loadImage("peanut copy.JPG");
-  peanut.resize(40, 40);
+//  peanut = loadImage("peanut copy.JPG");
+//  peanut.resize(40, 40);
 
   //object variables
   fx = 25;
@@ -64,6 +73,7 @@ void setup() {
   makeTopPlatform();
   makeBottomPlatform();
   makeTopPlatform2();
+  makeBridge1();
 }
 
 //===========================================================================================
@@ -75,6 +85,31 @@ void makeWorld() {
 }
 
 //===========================================================================================
+void makeBridge1(){
+ bridge1 = new FPoly();
+ 
+ 
+ //plot the vertices of this platform
+  bridge1.vertex(100, 300);
+  bridge1.vertex(100, 320);
+  bridge1.vertex(230, 320);
+  bridge1.vertex(230, 300);
+
+  
+  
+    // define properties
+  bridge1.setPosition(160, 60);
+  bridge1.setStatic(true);
+  bridge1.setStroke(255);
+  bridge1.setFillColor(255);
+  bridge1.setFriction(0.1);
+
+  //put it in the world
+  world.add(bridge1);
+}
+
+
+
 
 void makeTopPlatform() {
   topPlatform = new FPoly();
@@ -199,6 +234,10 @@ void draw() {
   rect(20, 20, 50, 10);
 
   // -----------------------
+  
+if(dKey){
+    fx += 4;
+  }
 
 
   if (i < 1 && !kOFF) {  //Every 20 frames ...
@@ -216,7 +255,9 @@ void draw() {
    background(255);
    world.remove(blueBox);
   }
-
+  
+  
+  
 
 
 
@@ -284,8 +325,8 @@ void mousePressed() {
 //===========================================================================================
 
 void makeBox() {
-  greenBox = new FBox(fx, fy);
-  greenBox.setPosition(random(500, width-100), -5);
+  greenBox = new FBox(25, 25);
+  greenBox.setPosition(fx, 100);
 
   //set visuals
 
@@ -310,8 +351,8 @@ void makeBox() {
 //===========================================================================================
 
 void makeBoxx() {
-  blueBox = new FBox(cx, cy);
-  blueBox.setPosition(random(500, width-100), -5);
+  blueBox = new FBox(25, 25);
+  blueBox.setPosition(cx, cy);
 
   //set visuals
 
