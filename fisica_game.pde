@@ -9,12 +9,20 @@ color yellow = color(242, 215, 16);
 
 //assets
 PImage redBird;
+PImage peanut;
 
 
 //cloud assets
 float cx, cy;
 
-FPoly topPlatform; 
+//boolean gravity
+boolean gOFF = false;
+boolean pOFF = false; // f bodies
+boolean kOFF = false;
+
+
+
+FPoly topPlatform;
 FPoly bottomPlatform;
 
 //fisica
@@ -23,8 +31,11 @@ FWorld world;
 void setup() {
   //make window
   size(800, 600);
-  
+
   //load resources
+  
+  peanut = loadImage("peanut.JPG");
+  peanut.resize(100, 100);
   redBird = loadImage("red-bird.png");
 
   //initialise world
@@ -33,10 +44,10 @@ void setup() {
   //add terrain to world
   makeTopPlatform();
   makeBottomPlatform();
-  
+
   //clouds
-  cx = 300;
-  cy = random(400, 0);
+  cx = -100;
+  cy = random(0, 200);
 }
 
 //===========================================================================================
@@ -54,7 +65,7 @@ void makeTopPlatform() {
 
   //plot the vertices of this platform
   //order matters
-  
+
   //bucket
   topPlatform.vertex(100, 60);
   topPlatform.vertex(70, 60);
@@ -66,14 +77,14 @@ void makeTopPlatform() {
   topPlatform.vertex(170, 170);
   topPlatform.vertex(100, 170);
 
-  
-  
 
-  
-  
- 
-  
-  
+
+
+
+
+
+
+
 
   // define properties
   topPlatform.setStatic(true);
@@ -82,9 +93,6 @@ void makeTopPlatform() {
 
   //put it in the world
   world.add(topPlatform);
-  
-  
-  
 }
 
 //===========================================================================================
@@ -113,39 +121,105 @@ void makeBottomPlatform() {
 void draw() {
   println("x: " + mouseX + " y: " + mouseY);
   background(blue);
+  if (cx > width) {
+    cx = -100;
+  }
 
-  if (frameCount % 50 == 0) {  //Every 20 frames ...
+  fill(255);
+  tact(550, 150, 120, 70);
+  rect(550, 150, 120, 70);
+
+
+  fill(255);
+  tactile(120, 150, 120, 70);
+  rect(120, 150, 120, 70);
+
+
+
+
+  //cloud behind
+  makeCloud(cx, cy);
+  cx += 3;
+
+  if (frameCount % 50 == 0 && !kOFF) {  //Every 20 frames ...
     makeCircle();
     makeBlob();
     makeBox();
     makeBird();
-    makeCloud(cx, cy);
   }
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
+
+  //cloud infront
+  fill(0);
+  makeCloud(cx - 200, cy-100);
 }
 
 
 //===========================================================================================
-void makeCloud(float x, float y){
-pushMatrix();
+void tactile (int x, int y, int w, int h) {
+  if (mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h) {
+    strokeWeight(3);
+    stroke(255);
+    gOFF = true;
+  } else {
+    stroke(#34a0a4);
+    gOFF = false;
+  }
+}
+
+
+void tact(int x, int y, int w, int h) {
+  if (mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h) {
+    strokeWeight(3);
+    stroke(255);
+    pOFF = true;
+  } else {
+    stroke(0);
+    pOFF = false;
+  }
+}
+
+boolean mousePressed = false;
+boolean mp = false;
+void mousePressed() {
+  if (gOFF && !mousePressed) {
+    world.setGravity(0, 0);
+    mousePressed = true;
+  } else if (gOFF && mousePressed) {
+    world.setGravity(0, 900);
+    mousePressed = false;
+  }
+
+  if (pOFF && !mousePressed) {
+    kOFF = true;
+    mousePressed = true;
+  } else if (pOFF && mousePressed) {
+    mousePressed = false;;
+    kOFF = false;
+  }
+}
+
+//===========================================================================================
+
+
+
+void makeCloud(float x, float y) {
+  pushMatrix();
   translate(x, y);
   stroke(0);
   strokeWeight(2);
+  fill(255, 100);
+  circle(cx - 200, cy, 100);
   fill(255);
-  circle(cx, cy, 100);
-
-  
-  
-  
-  
+  circle(cx, cy, 200);
   popMatrix();
 }
 
 //===========================================================================================
 void makeCircle() {
   FCircle circle = new FCircle(50);
-  circle.setPosition(random(100,width-100), -5);
+  circle.setPosition(random(100, width-100), -5);
 
   //set visuals
   circle.setStroke(0);
@@ -167,7 +241,7 @@ void makeBlob() {
   FBlob blob = new FBlob();
 
   //set visuals
-  blob.setAsCircle(random(100,width-100), -5, 50);
+  blob.setAsCircle(random(100, width-100), -5, 50);
   blob.setStroke(0);
   blob.setStrokeWeight(2);
   blob.setFillColor(yellow);
@@ -184,10 +258,16 @@ void makeBlob() {
 //===========================================================================================
 
 void makeBox() {
-  FBox box = new FBox(25, 100);
-  box.setPosition(random(100,width-100), -5);
+  FBox box = new FBox(100, 100);
+  box.setPosition(random(100, width-100), -5);
 
   //set visuals
+
+  //peanuts size
+
+   box.attachImage(peanut);
+
+
   box.setStroke(0);
   box.setStrokeWeight(2);
   box.setFillColor(green);
@@ -203,7 +283,7 @@ void makeBox() {
 
 void makeBird() {
   FCircle bird = new FCircle(48);
-  bird.setPosition(random(100,width-100), -5);
+  bird.setPosition(random(100, width-100), -5);
 
   //set visuals
   bird.attachImage(redBird);
